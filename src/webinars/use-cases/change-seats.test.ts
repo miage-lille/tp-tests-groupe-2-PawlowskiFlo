@@ -25,6 +25,15 @@ describe('Feature : Change seats', () => {
     expect(webinar?.props.seats).toEqual(100);
   }
 
+  async function whenUserChangeSeatsWith(payload: any) {
+    return await useCase.execute(payload);
+  }
+
+  async function thenUpdatedWebinarSeatsShouldBe(expectedSeats: number) {
+    const updatedWebinar = await webinarRepository.findById('webinar-id');
+    expect(updatedWebinar?.props.seats).toEqual(expectedSeats);
+  }
+
   beforeEach(() => {
         webinarRepository = new InMemoryWebinarRepository([webinar]);
         useCase = new ChangeSeats(webinarRepository);
@@ -39,10 +48,9 @@ describe('Feature : Change seats', () => {
     it('should change the number of seats for a webinar', async () => {
      // Vérification de la règle métier, condition testée...
      //ACT
-     await useCase.execute(payload);
+     await whenUserChangeSeatsWith(payload);
      // ASSERT
-     const updatedWebinar = await webinarRepository.findById('webinar-id');
-     expect(updatedWebinar?.props.seats).toEqual(200);
+     await thenUpdatedWebinarSeatsShouldBe(200);
     });
   });
 
@@ -54,12 +62,12 @@ describe('Feature : Change seats', () => {
     };
 
     it('should fail', async () => {
-      await expect(useCase.execute(payload)).rejects.toThrow('Webinar not found');
+      await expect(whenUserChangeSeatsWith(payload)).rejects.toThrow('Webinar not found');
     });
 
     it('should not modify the existing webinar', async () => {
       try {
-        await useCase.execute(payload);
+        await whenUserChangeSeatsWith(payload);
       } catch (error) {}
       
       expectWebinarToRemainUnchanged();
@@ -74,12 +82,12 @@ describe('Feature : Change seats', () => {
     };
 
     it('should fail', async () => {
-      await expect(useCase.execute(payload)).rejects.toThrow('User is not allowed to update this webinar');
+      await expect(whenUserChangeSeatsWith(payload)).rejects.toThrow('User is not allowed to update this webinar');
     });
 
     it('should not modify the webinar', async () => {
       try {
-        await useCase.execute(payload);
+        await whenUserChangeSeatsWith(payload);
       } catch (error) {}
       
       expectWebinarToRemainUnchanged();
@@ -94,12 +102,12 @@ describe('Feature : Change seats', () => {
     };
 
     it('should fail', async () => {
-      await expect(useCase.execute(payload)).rejects.toThrow('You cannot reduce the number of seats');
+      await expect(whenUserChangeSeatsWith(payload)).rejects.toThrow('You cannot reduce the number of seats');
     });
 
     it('should not modify the webinar', async () => {
       try {
-        await useCase.execute(payload);
+        await whenUserChangeSeatsWith(payload);
       } catch (error) {}
       
       expectWebinarToRemainUnchanged();
@@ -114,12 +122,12 @@ describe('Feature : Change seats', () => {
     };
 
     it('should fail', async () => {
-      await expect(useCase.execute(payload)).rejects.toThrow('Webinar must have at most 1000 seats');
+      await expect(whenUserChangeSeatsWith(payload)).rejects.toThrow('Webinar must have at most 1000 seats');
     });
 
     it('should not modify the webinar', async () => {
       try {
-        await useCase.execute(payload);
+        await whenUserChangeSeatsWith(payload);
       } catch (error) {}
       
       expectWebinarToRemainUnchanged();
