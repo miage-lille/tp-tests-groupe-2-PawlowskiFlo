@@ -20,6 +20,11 @@ describe('Feature : Change seats', () => {
         seats: 100,
   });
 
+  function expectWebinarToRemainUnchanged() {
+    const webinar = webinarRepository.findByIdSync('webinar-id');
+    expect(webinar?.props.seats).toEqual(100);
+  }
+
   beforeEach(() => {
         webinarRepository = new InMemoryWebinarRepository([webinar]);
         useCase = new ChangeSeats(webinarRepository);
@@ -57,8 +62,7 @@ describe('Feature : Change seats', () => {
         await useCase.execute(payload);
       } catch (error) {}
       
-      const webinar = webinarRepository.findByIdSync('webinar-id');
-      expect(webinar?.props.seats).toEqual(100);
+      expectWebinarToRemainUnchanged();
     });
   });
 
@@ -78,8 +82,7 @@ describe('Feature : Change seats', () => {
         await useCase.execute(payload);
       } catch (error) {}
       
-      const webinar = webinarRepository.findByIdSync('webinar-id');
-      expect(webinar?.props.seats).toEqual(100);
+      expectWebinarToRemainUnchanged();
     });
   });
 
@@ -99,8 +102,7 @@ describe('Feature : Change seats', () => {
         await useCase.execute(payload);
       } catch (error) {}
       
-      const webinar = webinarRepository.findByIdSync('webinar-id');
-      expect(webinar?.props.seats).toEqual(100);
+      expectWebinarToRemainUnchanged();
     });
   });
 
@@ -120,8 +122,7 @@ describe('Feature : Change seats', () => {
         await useCase.execute(payload);
       } catch (error) {}
       
-      const webinar = webinarRepository.findByIdSync('webinar-id');
-      expect(webinar?.props.seats).toEqual(100);
+      expectWebinarToRemainUnchanged();
     });
   });
 });
