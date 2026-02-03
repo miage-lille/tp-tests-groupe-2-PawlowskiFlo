@@ -40,4 +40,25 @@ describe('Feature : Change seats', () => {
      expect(updatedWebinar?.props.seats).toEqual(200);
     });
   });
+
+  describe('Scenario: webinar does not exist', () => {
+    const payload = {
+      user: testUser.alice,
+      webinarId: 'non-existent-webinar-id',
+      seats: 200,
+    };
+
+    it('should fail', async () => {
+      await expect(useCase.execute(payload)).rejects.toThrow('Webinar not found');
+    });
+
+    it('should not modify the existing webinar', async () => {
+      try {
+        await useCase.execute(payload);
+      } catch (error) {}
+      
+      const webinar = webinarRepository.findByIdSync('webinar-id');
+      expect(webinar?.props.seats).toEqual(100);
+    });
+  });
 });
