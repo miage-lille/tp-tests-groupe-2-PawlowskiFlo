@@ -61,4 +61,67 @@ describe('Feature : Change seats', () => {
       expect(webinar?.props.seats).toEqual(100);
     });
   });
+
+  describe('Scenario: update the webinar of someone else', () => {
+    const payload = {
+      user: testUser.floflo,
+      webinarId: 'webinar-id',
+      seats: 200,
+    };
+
+    it('should fail', async () => {
+      await expect(useCase.execute(payload)).rejects.toThrow('User is not allowed to update this webinar');
+    });
+
+    it('should not modify the webinar', async () => {
+      try {
+        await useCase.execute(payload);
+      } catch (error) {}
+      
+      const webinar = webinarRepository.findByIdSync('webinar-id');
+      expect(webinar?.props.seats).toEqual(100);
+    });
+  });
+
+  describe('Scenario: change seat to an inferior number', () => {
+    const payload = {
+      user: testUser.alice,
+      webinarId: 'webinar-id',
+      seats: 50,
+    };
+
+    it('should fail', async () => {
+      await expect(useCase.execute(payload)).rejects.toThrow('You cannot reduce the number of seats');
+    });
+
+    it('should not modify the webinar', async () => {
+      try {
+        await useCase.execute(payload);
+      } catch (error) {}
+      
+      const webinar = webinarRepository.findByIdSync('webinar-id');
+      expect(webinar?.props.seats).toEqual(100);
+    });
+  });
+
+  describe('Scenario: change seat to a number > 1000', () => {
+    const payload = {
+      user: testUser.alice,
+      webinarId: 'webinar-id',
+      seats: 1001,
+    };
+
+    it('should fail', async () => {
+      await expect(useCase.execute(payload)).rejects.toThrow('Webinar must have at most 1000 seats');
+    });
+
+    it('should not modify the webinar', async () => {
+      try {
+        await useCase.execute(payload);
+      } catch (error) {}
+      
+      const webinar = webinarRepository.findByIdSync('webinar-id');
+      expect(webinar?.props.seats).toEqual(100);
+    });
+  });
 });
