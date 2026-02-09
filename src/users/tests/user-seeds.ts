@@ -16,4 +16,9 @@ export const testUser = {
     email: 'charles@gmail.com',
     password: 'azerty',
   }),
+  floflo: new User({
+    id: 'floflo-id',
+    email: 'floflotheescargot@gmail.com',
+    password: 'azerty',
+  }),
 };
